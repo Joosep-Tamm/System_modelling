@@ -56,6 +56,9 @@ class User {
 
   // A user can have many payment transactions over time
   1 -> * PaymentTransaction payments;
+
+  // A user interacts with the system through the Mobile App
+  1 -> 1 MobileApp app;
 }
 
 class PhysicalKeyCard {
@@ -64,17 +67,19 @@ class PhysicalKeyCard {
 }
 
 class MaintenanceStaff {
-  isA User;
-
   // Staff can move scooters between parking zones or perform repairs
   * -> * Scooter managedScooters;
+
+  // Staff also use the Mobile App for diagnostics and relocation tasks
+  1 -> 1 MobileApp app;
 }
 
 class Administrator {
-  isA User;
-
   // Administrators oversee all scooters in the system
   * -> * Scooter overseenScooters;
+
+  // Admins also use the Mobile App for monitoring and oversight
+  1 -> 1 MobileApp app;
 }
 
 // =======================
@@ -124,62 +129,23 @@ class GoogleMaps {
   // The system uses Google Maps to fetch data
   0..1 -> * Scooter scooters;
   0..1 -> * ParkingZone zones;
-}
-//$?[End_of_model]$?
-
-namespace -;
-
-class Scooter
-{
-  position 427 276 179.6 109.367;
+  0..1 -> * MobileApp apps;
 }
 
-class ScooterStatus
-{
-  position 798 281 155.033 58.3667;
-}
+// =======================
+// Mobile Application
+// =======================
+class MobileApp {
+  String appVersion;
+  String platform; // iOS / Android
+  String pushNotificationToken;
 
-class ParkingZone
-{
-  position 296 68 127.467 92.3667;
-}
+  // Mobile app enables users to book and unlock scooters
+  * -> * User users;
 
-class User
-{
-  position 278 601 116.517 92.3667;
-}
+  // Mobile app interacts with Google Maps for navigation
+  1 -> 1 GoogleMaps maps;
 
-class PhysicalKeyCard
-{
-  position 53 610 132.8 75.3667;
-}
-
-class MaintenanceStaff
-{
-  position 947 71 139.467 41.3667;
-}
-
-class Administrator
-{
-  position 782 78 114.267 41.3667;
-}
-
-class Trip
-{
-  position 668 548 162.35 109.367;
-}
-
-class PaymentTransaction
-{
-  position 438 435 183.25 109.367;
-}
-
-class Invoice
-{
-  position 60 389 175 92.3667;
-}
-
-class GoogleMaps
-{
-  position 569 59 119.883 58.3667;
+  // Mobile app enables payment processing
+  1 -> * PaymentTransaction transactions;
 }

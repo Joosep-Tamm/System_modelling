@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmi:id="_P-k0YKBuEfCHIO9bu6JIeg" name="sm">
+  <eAnnotations xmi:id="_P-k0YaBuEfCHIO9bu6JIeg" source="Objing">
+    <contents xmi:type="uml:Property" xmi:id="_P-k0YqBuEfCHIO9bu6JIeg" name="exporterVersion">
+      <defaultValue xmi:type="uml:LiteralString" xmi:id="_P-k0Y6BuEfCHIO9bu6JIeg" value="3.0.0"/>
+    </contents>
+  </eAnnotations>
+  <packagedElement xmi:type="uml:Class" xmi:id="_P-k0ZKBuEfCHIO9bu6JIeg" name="Scooter">
+    <ownedAttribute xmi:id="_P-k0ZaBuEfCHIO9bu6JIeg" name="trip" visibility="public" type="_P-k0qKBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0baBuEfCHIO9bu6JIeg">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_P-k0ZqBuEfCHIO9bu6JIeg" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_P-k0Z6BuEfCHIO9bu6JIeg"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0aKBuEfCHIO9bu6JIeg" name="parkingZone" visibility="public" type="_P-k0c6BuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0b6BuEfCHIO9bu6JIeg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_P-k0aaBuEfCHIO9bu6JIeg"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0aqBuEfCHIO9bu6JIeg" name="batteryLevel" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0a6BuEfCHIO9bu6JIeg" name="currentLocation" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0bKBuEfCHIO9bu6JIeg" name="qrCode" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_P-k0baBuEfCHIO9bu6JIeg" memberEnd="_P-k0ZaBuEfCHIO9bu6JIeg _P-k0bqBuEfCHIO9bu6JIeg">
+    <ownedEnd xmi:id="_P-k0bqBuEfCHIO9bu6JIeg" visibility="public" type="_P-k0ZKBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0baBuEfCHIO9bu6JIeg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_P-k0b6BuEfCHIO9bu6JIeg" memberEnd="_P-k0aKBuEfCHIO9bu6JIeg _P-k0cKBuEfCHIO9bu6JIeg">
+    <ownedEnd xmi:id="_P-k0cKBuEfCHIO9bu6JIeg" visibility="public" type="_P-k0ZKBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0b6BuEfCHIO9bu6JIeg">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_P-k0caBuEfCHIO9bu6JIeg" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_P-k0cqBuEfCHIO9bu6JIeg"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_P-k0c6BuEfCHIO9bu6JIeg" name="ParkingZone">
+    <ownedAttribute xmi:id="_P-k0dKBuEfCHIO9bu6JIeg" name="name" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0daBuEfCHIO9bu6JIeg" name="location" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_P-k0dqBuEfCHIO9bu6JIeg" name="Map">
+    <ownedAttribute xmi:id="_P-k0d6BuEfCHIO9bu6JIeg" name="parkingZone" visibility="public" type="_P-k0c6BuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0e6BuEfCHIO9bu6JIeg">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_P-k0eKBuEfCHIO9bu6JIeg" value="*"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0eaBuEfCHIO9bu6JIeg" name="scooter" visibility="public" type="_P-k0ZKBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0fqBuEfCHIO9bu6JIeg"/>
+    <ownedAttribute xmi:id="_P-k0eqBuEfCHIO9bu6JIeg" name="apiKey" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_P-k0e6BuEfCHIO9bu6JIeg" memberEnd="_P-k0d6BuEfCHIO9bu6JIeg _P-k0fKBuEfCHIO9bu6JIeg">
+    <ownedEnd xmi:id="_P-k0fKBuEfCHIO9bu6JIeg" visibility="public" type="_P-k0dqBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0e6BuEfCHIO9bu6JIeg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_P-k0faBuEfCHIO9bu6JIeg"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_P-k0fqBuEfCHIO9bu6JIeg" memberEnd="_P-k0eaBuEfCHIO9bu6JIeg _P-k0f6BuEfCHIO9bu6JIeg">
+    <ownedEnd xmi:id="_P-k0f6BuEfCHIO9bu6JIeg" visibility="public" type="_P-k0dqBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0fqBuEfCHIO9bu6JIeg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_P-k0gKBuEfCHIO9bu6JIeg"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_P-k0gaBuEfCHIO9bu6JIeg" name="Administrator">
+    <ownedAttribute xmi:id="_P-k0gqBuEfCHIO9bu6JIeg" name="scooter" visibility="public" type="_P-k0ZKBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0hKBuEfCHIO9bu6JIeg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_P-k0g6BuEfCHIO9bu6JIeg"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_P-k0hKBuEfCHIO9bu6JIeg" memberEnd="_P-k0gqBuEfCHIO9bu6JIeg _P-k0haBuEfCHIO9bu6JIeg">
+    <ownedEnd xmi:id="_P-k0haBuEfCHIO9bu6JIeg" visibility="public" type="_P-k0gaBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0hKBuEfCHIO9bu6JIeg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_P-k0hqBuEfCHIO9bu6JIeg"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_P-k0h6BuEfCHIO9bu6JIeg" name="Maintenance staff">
+    <ownedAttribute xmi:id="_P-k0iKBuEfCHIO9bu6JIeg" name="scooter" visibility="public" type="_P-k0ZKBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0iqBuEfCHIO9bu6JIeg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_P-k0iaBuEfCHIO9bu6JIeg"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_P-k0iqBuEfCHIO9bu6JIeg" memberEnd="_P-k0iKBuEfCHIO9bu6JIeg _P-k0i6BuEfCHIO9bu6JIeg">
+    <ownedEnd xmi:id="_P-k0i6BuEfCHIO9bu6JIeg" visibility="public" type="_P-k0h6BuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0iqBuEfCHIO9bu6JIeg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_P-k0jKBuEfCHIO9bu6JIeg"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_P-k0jaBuEfCHIO9bu6JIeg" name="ScooterStatus">
+    <ownedAttribute xmi:id="_P-k0jqBuEfCHIO9bu6JIeg" name="scooter" visibility="public" type="_P-k0ZKBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0kKBuEfCHIO9bu6JIeg"/>
+    <ownedAttribute xmi:id="_P-k0j6BuEfCHIO9bu6JIeg" name="lastUpdated" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_P-k0kKBuEfCHIO9bu6JIeg" memberEnd="_P-k0jqBuEfCHIO9bu6JIeg _P-k0kaBuEfCHIO9bu6JIeg">
+    <ownedEnd xmi:id="_P-k0kaBuEfCHIO9bu6JIeg" visibility="public" type="_P-k0jaBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0kKBuEfCHIO9bu6JIeg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_P-k0kqBuEfCHIO9bu6JIeg" name="User" isAbstract="true">
+    <generalization xmi:id="_P-k0k6BuEfCHIO9bu6JIeg" general="_P-k0h6BuEfCHIO9bu6JIeg"/>
+    <generalization xmi:id="_P-k0lKBuEfCHIO9bu6JIeg" general="_P-k0gaBuEfCHIO9bu6JIeg"/>
+    <generalization xmi:id="_P-k0laBuEfCHIO9bu6JIeg" general="_P-k0maBuEfCHIO9bu6JIeg"/>
+    <ownedAttribute xmi:id="_P-k0lqBuEfCHIO9bu6JIeg" name="name" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0l6BuEfCHIO9bu6JIeg" name="email" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0mKBuEfCHIO9bu6JIeg" name="phone" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_P-k0maBuEfCHIO9bu6JIeg" name="Rider">
+    <ownedAttribute xmi:id="_P-k0mqBuEfCHIO9bu6JIeg" name="keyCard" visibility="public" type="_P-k0vKBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0oqBuEfCHIO9bu6JIeg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_P-k0m6BuEfCHIO9bu6JIeg"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0nKBuEfCHIO9bu6JIeg" name="paymentTransaction" visibility="public" type="_P-k0raBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0pKBuEfCHIO9bu6JIeg">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_P-k0naBuEfCHIO9bu6JIeg" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_P-k0nqBuEfCHIO9bu6JIeg"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0n6BuEfCHIO9bu6JIeg" name="trip" visibility="public" type="_P-k0qKBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0pqBuEfCHIO9bu6JIeg">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_P-k0oKBuEfCHIO9bu6JIeg" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_P-k0oaBuEfCHIO9bu6JIeg"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_P-k0oqBuEfCHIO9bu6JIeg" memberEnd="_P-k0mqBuEfCHIO9bu6JIeg _P-k0o6BuEfCHIO9bu6JIeg">
+    <ownedEnd xmi:id="_P-k0o6BuEfCHIO9bu6JIeg" visibility="public" type="_P-k0maBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0oqBuEfCHIO9bu6JIeg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_P-k0pKBuEfCHIO9bu6JIeg" memberEnd="_P-k0nKBuEfCHIO9bu6JIeg _P-k0paBuEfCHIO9bu6JIeg">
+    <ownedEnd xmi:id="_P-k0paBuEfCHIO9bu6JIeg" visibility="public" type="_P-k0maBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0pKBuEfCHIO9bu6JIeg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_P-k0pqBuEfCHIO9bu6JIeg" memberEnd="_P-k0n6BuEfCHIO9bu6JIeg _P-k0p6BuEfCHIO9bu6JIeg">
+    <ownedEnd xmi:id="_P-k0p6BuEfCHIO9bu6JIeg" visibility="public" type="_P-k0maBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0pqBuEfCHIO9bu6JIeg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_P-k0qKBuEfCHIO9bu6JIeg" name="Trip">
+    <ownedAttribute xmi:id="_P-k0qaBuEfCHIO9bu6JIeg" name="startLocation" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0qqBuEfCHIO9bu6JIeg" name="endLocation" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0q6BuEfCHIO9bu6JIeg" name="duration" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0rKBuEfCHIO9bu6JIeg" name="cost" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDouble"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_P-k0raBuEfCHIO9bu6JIeg" name="PaymentTransaction">
+    <ownedAttribute xmi:id="_P-k0rqBuEfCHIO9bu6JIeg" name="trip" visibility="public" type="_P-k0qKBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0s6BuEfCHIO9bu6JIeg"/>
+    <ownedAttribute xmi:id="_P-k0r6BuEfCHIO9bu6JIeg" name="transactionId" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0sKBuEfCHIO9bu6JIeg" name="timestamp" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDate"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0saBuEfCHIO9bu6JIeg" name="amount" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDouble"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0sqBuEfCHIO9bu6JIeg" name="paymentMethod" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_P-k0s6BuEfCHIO9bu6JIeg" memberEnd="_P-k0rqBuEfCHIO9bu6JIeg _P-k0tKBuEfCHIO9bu6JIeg">
+    <ownedEnd xmi:id="_P-k0tKBuEfCHIO9bu6JIeg" visibility="public" type="_P-k0raBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0s6BuEfCHIO9bu6JIeg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_P-k0taBuEfCHIO9bu6JIeg" name="Invoice">
+    <ownedAttribute xmi:id="_P-k0tqBuEfCHIO9bu6JIeg" name="paymentTransaction" visibility="public" type="_P-k0raBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0uqBuEfCHIO9bu6JIeg"/>
+    <ownedAttribute xmi:id="_P-k0t6BuEfCHIO9bu6JIeg" name="invoiceNumber" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0uKBuEfCHIO9bu6JIeg" name="issuedDate" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDate"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0uaBuEfCHIO9bu6JIeg" name="billingDetails" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_P-k0uqBuEfCHIO9bu6JIeg" memberEnd="_P-k0tqBuEfCHIO9bu6JIeg _P-k0u6BuEfCHIO9bu6JIeg">
+    <ownedEnd xmi:id="_P-k0u6BuEfCHIO9bu6JIeg" visibility="public" type="_P-k0taBuEfCHIO9bu6JIeg" isUnique="false" association="_P-k0uqBuEfCHIO9bu6JIeg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_P-k0vKBuEfCHIO9bu6JIeg" name="KeyCard">
+    <ownedAttribute xmi:id="_P-k0vaBuEfCHIO9bu6JIeg" name="cardId" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_P-k0vqBuEfCHIO9bu6JIeg" name="issuedDate" visibility="public" isUnique="false">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml#EDate"/>
+    </ownedAttribute>
+  </packagedElement>
+</uml:Model>

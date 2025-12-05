@@ -1,71 +1,63 @@
 # Scooter Sharing System Description
 
-Our system models a **scooter** sharing platform, similar to services like Bolt. The platform allows **riders** to locate, unlock, and ride scooters using a mobile application.
+Our system models a scooter sharing platform, similar to services like Bolt. The architecture is centrally managed by a MobileApp class, which serves as the entry point and aggregates specific controllers—ScooterController, TripController, PaymentController, MapService, and UserController—to orchestrate the interaction between users, the physical fleet, and the backend logic.
+Scooter fleet and lifecycle.
 
 ## Scooter fleet. 
-Every `Scooter` is identified by `scooterId` and tracks its `batteryLevel`, `currentLocation`, `qrCode`, and the `zoneId` of the `ParkingZone` where it is parked (if any). Each scooter owns exactly one `ScooterStatus` instance at a time, and each status record belongs to exactly one scooter, capturing the last status change (`lastUpdated`) and the current `status` chosen from the `statusType` enumeration with its four literals (`available`, `inUse`, `charging`, `outOfService`). 
 
-Use-Case Integration
+Every Scooter is identified by scooterId and tracks its batteryLevel, currentLocation, qrCode, and the zoneId of the ParkingZone where it is parked. Each scooter owns exactly one ScooterStatus instance, capturing the last status change (lastUpdated) and the current status chosen from the statusType enumeration with its four literals (available, inUse, charging, outOfService).
 
-- Locate scooter (Rider + Technician) uses currentLocation and statusType.
-- Update scooter status (Technician) modifies the active ScooterStatus.
-- Unlock scooter transitions status to inUse.
-- End scooter ride transitions scooters back to available or charging.
+The ScooterController manages the active fleet (via the activeScooter association and setStatus operation) and enforces a strict lifecycle defined by the system's State Chart:
 
-Scooter Technicians maintain scooters and update their status through their operational use cases (Maintain scooter, Update scooter status), which map directly to modifying Scooter, ScooterStatus, and associations with technicians.
+    Available: The scooter performs broadcastLiveLocation(). From here, reserveRequested transitions it to ReservationPending (where startReservationTimer() runs), or batteryLowDetected auto-dispatches it to Charging.
+    Ride In Progress: Upon a successful unlock (via unlockViaApp or unlockViaKeycard), the scooter enters this composite state. It cycles through internal states:
+        Navigating: The main riding state where updateLocation() and incrementActiveTime() occur.
+        Paused: Entered if the rider stops temporarily (holdCurrentPosition).
+        ParkingCheck: Triggered by riderEndRide, where the system executes validateZoneWithMap() to ensure compliance.
+        ConnectionIssue: Handles signal loss via attemptReconnect.
+    PostRideProcessing: Once the ride ends validly, the system computes costs and awaits payment confirmation. If paymentAuthorized, the scooter returns to Available (if battery ≥ 30%) or transitions to Charging (if battery < 30%).
+    Maintenance: Transitions like technicianPickup move the scooter to OutOfService for diagnosis, while maintenanceComplete returns it to service.
 
 ## Trips and payments.
-Riders start `Trip` instances through use cases
-- Unlock via mobile app
-- Unlock via keycard
 
-Each trip references exactly one scooter and one rider (multiplicity `1` on both associations) and is uniquely identified by `tripId` while storing `startLocation`, `endLocation`, `duration`, `travelDistance`, and computed `cost` (`duration + travelDistance`). Scooters and riders, in turn, participate in many trips over time (multiplicity `0..*`). When a trip finishes, the platform issues exactly one `PaymentTransaction` (with `transactionId`, `timestamp`, `amount`, `paymentMethod`) and a one-to-one `Invoice` (`invoiceNumber`, `issuedDate`, `billingDetails`). Every trip is covered by exactly one invoice and exactly one payment transaction, and each of those artefacts points back to a single trip (bidirectional `1..1` associations). The transaction covers the associated invoice and records the identifiers of the trip and paying user, ensuring auditable billing. Each transaction belongs to exactly one user, while users may accumulate many transactions over time.
+Riders start Trip instances, managed by the TripController (operations startTrip, endTrip). Each trip references exactly one scooter and one rider and is uniquely identified by tripId while storing startLocation, endLocation, duration, travelDistance, and a derived attribute /cost (calculated from duration + travelDistance).
 
-When a trip ends (via End a scooter ride):
-- The system validates the parking location.
-- If parked outside any allowed ParkingZone, the Apply a parking violation fee (extend) use case is triggered.
-- Cost is finalized.
+The workflow follows a strict sequence detailed in the Activity Diagram:
 
-After this, Pay for the ride is executed.
+    Locate & Unlock: The rider uses the app to locate a scooter. If available, they choose to unlock via App or Keycard.
+    Ride: The rider operates the scooter.
+    End & Validate: When ending the ride, the system checks if the scooter is "Parked in allowed zone?"
+        If No, the Apply parking violation fee logic is triggered.
+        If Yes, the flow proceeds to Compute trip cost.
+    Financial Settlement: The process continues sequentially: Create trip record → Generate trip invoice → Process payment → Confirm payment → Update scooter status → End.
 
-When a rider pays:
-- The system includes the Generate invoice use case.
-- The external Payment Service performs the Process payment use case.
+The PaymentController handles the financial backend (payForTrip, makeInvoice). It generates exactly one PaymentTransaction (transactionId, timestamp, amount, paymentMethod) and a one-to-one Invoice (invoiceNumber, issuedDate, billingDetails). Both artifacts correspond to a single Trip.
 
-## User hierarchy.
-All people interacting with the system inherit from the abstract `User` class (`userId`, `name`, `phone`, `email`). `Rider` and `Employee` specialize this base type:
+## User hierarchy and Recruitment.
 
-- A `Rider` owns exactly one `BankAccount` (`accountId`, `accountDetails`) used to pay for trips, and each bank account is linked to exactly one user. Riders may optionally link a physical `KeyCard` (`cardId`, `issuedDate`)—multiplicity `0..1` on the rider side and `1` on the key card side—for quick scooter access. Riders can take many trips.
+All people interact via the abstract User class (userId, name, phone, email), managed by the UserController (addUser, loggedInUser).
 
-Riders can:
-- Locate scooter
-- View parking zones
-- Unlock scooter (via app/keycard)
-- Start a scooter ride
-- End a scooter ride
-- Pay for the ride
+Riders:
+Rider specializes User and owns exactly one BankAccount (accountId, accountDetails, balance) used to pay for trips. They may optionally link a physical KeyCard (cardId, issuedDate) for quick access.
 
-An `Employee` stores `monthlySalary` and `department`. Every employee is managed by exactly one `HumanResourceManager`, and each manager supervises one or more employees. `Employee` acts as a generalization of the `Human Resource Manager` and `Scooter Technician` classes.
+HR and Recruitment:
+The system includes a RecruitmentController to manage hiring logic.
+
+    JobCandidates: Applicants are tracked as JobCandidate objects with resumeText, appliedPosition, and a status (from the CandidateStatus enum: waitingForReview, rejected, withdrawn). Candidates can perform the withdraw() operation.
+    Recruitment Process: The controller provides operations to convertToEmployee(candidate), deleteJobCandidate(candidate), and updateCandidateStatus.
+    Employees: Once hired, a candidate becomes an Employee (monthlySalary, department).
+    Managers: A HumanResourceManager is a specialized Employee who manages other employees. They have a recruitmentQuota and operations to accept(candidate) or reject(candidate).
 
 ## Operations staff.
-`HumanResourceManager` employees oversee the broader workforce, including `ScooterTechnician` employees. Managers are linked to one or more `AdministrativeResponsibility` entries, and each responsibility can itself reference one or more managers, forming a many-to-many relationship that documents shared oversight areas. `ScooterTechnician` specializes `Employee`, maintains scooters, and is provided with exactly one `Car` (with `humanCapacity` and `scooterCapacity`). Each car can support between one and four technicians (`1..4` multiplicity on the car-to-technician association). Technicians may maintain many scooters, while each scooter is assigned to at most one active technician at a time.
 
-HR use cases:
-- Add New Employee
-- Remove Employee
+ScooterTechnician (specializing Employee) uses the ScooterController to perform maintenance (maintenanceComplete, technicianDiagnose). They are provided with exactly one Car (humanCapacity, scooterCapacity), which supports between one and four technicians (1..4 multiplicity). Technicians may maintain many scooters, while each scooter is assigned to at most one active technician at a time.
+Physical infrastructure.
 
-Scooter Technicians perform:
-- Maintain scooter
-- Locate scooter
-- Update scooter status
+The MapService contains the defined ParkingZone instances (zoneId, name, location). It provides critical operations for the system's logic:
 
-## Physical infrastructure.
-`ParkingZone` instances (`zoneId`, `name`, `location`) designate legal parking spots. A zone can hold many scooters (`0..*`), while each scooter can belong to at most one zone at a time (`0..1`). When a rider finishes a trip, the application enforces parking inside an allowed zone before charging and invoicing. The external `Map` component (`apiKey`) contains the defined parking zones with multiplicity `1..*` and renders them to customers.
-
-Use cases related to infrastructure:
-- View parking zones
-- End scooter ride (zone validation)
-- Apply a parking violation fee (condition: “parked outside permitted zone”)
+    getScooterLocation(scooter): Retrieves real-time coordinates.
+    locationInParkingZone(): Returns a boolean used during the ParkingCheck state and the "Parked in allowed zone?" decision node in the activity workflow.
 
 ## Process overview.
-Riders discover a scooter via the mobile app (backed by the `Map` integration), unlock it using the app or an optional key card, and complete a trip. On completion they park in a permitted zone, the system finalizes the trip, updates the scooter’s status to `available` or `charging`, and issues invoicing documentation. Scooter technicians use company cars to rebalance or repair scooters, updating statuses as they go, while HR managers track responsibilities and supervise employees.
+
+Riders discover a scooter via the MobileApp (backed by MapService), unlock it using the app or an optional key card, and complete a trip. On completion, the MapService validates the parking zone. If valid, the TripController finalizes the cost, and the PaymentController issues the transaction and invoice. Simultaneously, the ScooterController updates the scooter's state from PostRideProcessing back to Available or Charging. Technicians intervene when scooters enter OutOfService or Charging states, physically moving and diagnosing the fleet.

@@ -1,0 +1,74 @@
+@startuml ScooterLifecycle
+hide empty description
+title Scooter Sharing Lifecycle Statechart
+
+[*] --> Available
+
+Available : entry / publishAvailability()
+Available : do / broadcastLiveLocation()
+Available : exit / logStatusChange("reserved")
+
+Available --> ReservationPending : reserveRequested / holdScooterForRider()
+Available --> Charging : batteryLowDetected / autoDispatchToCharging()
+Available --> OutOfService : technicianPickup / assignTechnician()
+
+ReservationPending : entry / startReservationTimer()
+ReservationPending : exit / clearReservationTimer()
+ReservationPending --> Available : reservationExpired / releaseHold()
+ReservationPending --> RideInProgress : unlockViaApp [batteryLevel >= 20] / startBillingClock()
+ReservationPending --> RideInProgress : unlockViaKeycard [batteryLevel >= 20] / startBillingClock()
+ReservationPending --> OutOfService : unlockViaApp [batteryLevel < 20] / blockRideForCharging()
+
+state PostRideProcessing
+PostRideProcessing : entry / computeRideCost()
+PostRideProcessing : do / awaitPaymentConfirmation()
+PostRideProcessing : exit / pushInvoice()
+
+state "Ride In Progress" as RideInProgress {
+	[*] --> Navigating : unlockConfirmed / startTripSession()
+
+	Navigating : entry / updateScooterStatus("inUse")
+	Navigating : do / updateLocation(), incrementKilometers(), incrementActiveTime()
+	Navigating --> Paused : riderStops
+	Navigating --> ParkingCheck : riderEndRide / startParkingValidation()
+
+	Paused : entry / holdCurrentPosition()
+	Paused : do / updateLocation(), incrementPausedTime()
+	Paused --> Navigating : riderResumes
+	Paused --> ParkingCheck : riderEndRide / startParkingValidation()
+
+	ParkingCheck : do / validateZoneWithMap()
+	ParkingCheck --> Navigating : zoneInvalid / promptReposition()
+	ParkingCheck --> PostRideProcessing : zoneValid / finalizeTripData()
+}
+
+state ConnectionIssue
+ConnectionIssue : entry / pauseSession()
+ConnectionIssue : do / attemptReconnect()
+
+RideInProgress --> ConnectionIssue : connectionLost / alertRider()
+ConnectionIssue --> RideInProgress.[H] : connectionRecovered / resumeRide()
+
+RideInProgress --> OutOfService : technicianPickup / abortTripForRecovery()
+
+PostRideProcessing --> Available : paymentAuthorized [batteryLevel >= 30] / publishAvailability()
+PostRideProcessing --> Charging : paymentAuthorized [batteryLevel < 30] / queueForCharging()
+PostRideProcessing --> OutOfService : technicianPickup / rerouteTechnician()
+
+state Charging
+Charging : entry / markStatus("charging")
+Charging : do / monitorBattery()
+Charging : exit / logChargeSession()
+
+Charging --> Available : chargeCompleted / publishAvailability()
+Charging --> OutOfService : chargerFault / escalateToTechnician()
+
+state OutOfService
+OutOfService : entry / flagScooterAsBlocked()
+OutOfService : do / technicianDiagnose()
+OutOfService : exit / updateStatusLog()
+
+OutOfService --> Charging : maintenanceComplete [batteryLevel < 80] / sendToChargingBay()
+OutOfService --> Available : maintenanceComplete [batteryLevel >= 80] / reopenForFleet()
+
+@enduml

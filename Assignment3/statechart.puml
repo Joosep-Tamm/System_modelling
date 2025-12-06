@@ -70,5 +70,6 @@ OutOfService : exit / updateStatusLog()
 
 OutOfService --> Charging : maintenanceComplete [batteryLevel < 80] / sendToChargingBay()
 OutOfService --> Available : maintenanceComplete [batteryLevel >= 80] / reopenForFleet()
+OutOfService --> [*] : beyondRepair / decommissionScooter()
 
 @enduml

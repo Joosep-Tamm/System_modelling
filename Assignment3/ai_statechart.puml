@@ -1,0 +1,66 @@
+@startuml ScooterStateChart
+title Scooter Lifecycle State Chart
+
+[*] --> Available
+
+state Available
+Available : do / broadcastLiveLocation()
+
+state ReservationPending
+ReservationPending : entry / startReservationTimer()
+
+state Charging
+Charging : do / chargeBattery()
+
+state OutOfService
+OutOfService : do / technicianDiagnose()
+
+state RideInProgress {
+    [*] --> Navigating
+    
+    state Navigating
+    Navigating : do / updateLocation()
+    Navigating : do / incrementActiveTime()
+    
+    state Paused
+    Paused : do / blinkLights()
+    
+    state ConnectionIssue
+    ConnectionIssue : do / attemptReconnect()
+    
+    state ParkingCheck
+    ParkingCheck : entry / validateZoneWithMap()
+
+    Navigating --> Paused : holdCurrentPosition
+    Paused --> Navigating : resumeRide
+    
+    Navigating --> ConnectionIssue : signalLoss
+    Paused --> ConnectionIssue : signalLoss
+    
+    ConnectionIssue --> [H] : connectionRestored
+    
+    Navigating --> ParkingCheck : riderEndRide / stopRecording(); lockWheels()
+    Paused --> ParkingCheck : riderEndRide / stopRecording(); lockWheels()
+    
+    ParkingCheck --> PostRideProcessing : validationComplete [parkingValid]
+    ParkingCheck --> PostRideProcessing : validationComplete [parkingInvalid] / applyViolationFee(); notifyAdmin()
+}
+
+state PostRideProcessing
+PostRideProcessing : entry / computeCosts()
+
+Available --> ReservationPending : reserveRequested / logReservation(); notifyUser()
+Available --> Charging : batteryLowDetected
+
+ReservationPending --> RideInProgress : unlockViaApp
+ReservationPending --> RideInProgress : unlockViaKeycard
+
+PostRideProcessing --> Available : paymentAuthorized [battery >= 30%]
+PostRideProcessing --> Charging : paymentAuthorized [battery < 30%]
+
+Available --> OutOfService : maintenanceRequired
+Charging --> OutOfService : chargingFault
+Charging --> Available : batteryFull
+OutOfService --> Available : maintenanceComplete
+
+@enduml

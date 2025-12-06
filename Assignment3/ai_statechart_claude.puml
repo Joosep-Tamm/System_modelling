@@ -1,0 +1,70 @@
+@startuml Scooter_Sharing_System_Statechart
+
+title Scooter Sharing System - Scooter Lifecycle
+
+[*] --> Available : scooterDeployed / broadcastLiveLocation()
+
+Available : entry / broadcastLiveLocation()
+Available : do / monitorBattery()
+
+Available --> ReservationPending : reserveRequested [userVerified] / startReservationTimer()
+Available --> Charging : batteryLowDetected [batteryLevel < 20%] / notifyDispatchTeam()
+
+ReservationPending : entry / lockScooter()
+ReservationPending : do / displayReservationInfo()
+ReservationPending : exit / clearReservation()
+
+ReservationPending --> Available : reservationExpired [timerExpired] / cancelReservation()
+ReservationPending --> RideInProgress : unlockViaApp [qrCodeScanned] / authenticateUser(), unlockScooter()
+ReservationPending --> RideInProgress : unlockViaKeycard [keycardValid] / unlockScooter()
+
+state RideInProgress {
+  [*] --> Navigating
+  
+  Navigating : entry / startTripTimer()
+  Navigating : do / updateLocation(), incrementActiveTime()
+  Navigating : exit / stopTripTimer()
+  
+  Navigating --> Paused : riderStops / holdCurrentPosition()
+  Paused : entry / pauseTripTimer()
+  Paused : do / displayPauseWarning()
+  Paused : exit / resumeTripTimer()
+  Paused --> Navigating : riderResumes
+  
+  Navigating --> ParkingCheck : riderEndRide [tripDuration > 1min]
+  Paused --> ParkingCheck : riderEndRide
+  
+  ParkingCheck : entry / validateZoneWithMap()
+  ParkingCheck : do / checkParkingRules()
+  
+  ParkingCheck --> H : invalidParkingLocation / applyParkingFee(), notifyRider()
+  
+  state H <<history>>
+}
+
+RideInProgress --> PostRideProcessing : validParkingConfirmed [locationInParkingZone()] / lockScooter(), calculateTripCost()
+
+PostRideProcessing : entry / createTripRecord(), generateInvoice()
+PostRideProcessing : do / processPaymentTransaction()
+PostRideProcessing : exit / confirmPayment()
+
+PostRideProcessing --> Available : paymentAuthorized [batteryLevel >= 30%] / updateScooterStatus()
+PostRideProcessing --> Charging : paymentAuthorized [batteryLevel < 30%] / notifyDispatchTeam()
+
+Available --> Maintenance : technicianPickup / disableScooter()
+
+Maintenance : entry / disableRentals()
+Maintenance : do / awaitTechnicianDiagnosis()
+Maintenance : exit / logRepairStart()
+
+Maintenance --> Available : maintenanceComplete [batteryLevel >= 30%] / enableScooter(), updateStatus()
+Maintenance --> Charging : maintenanceComplete [batteryLevel < 30%] / enableScooter()
+Maintenance --> [*] : scooterUnrepairable / decommissionScooter(), archiveScooterData()
+
+Charging : entry / assignTechnician(), connectCharger()
+Charging : do / monitorChargingProgress()
+Charging : exit / disconnectCharger()
+
+Charging --> Available : batteryFull [batteryLevel >= 95%] / transportToZone(), broadcastLiveLocation()
+
+@enduml
